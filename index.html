@@ -1,0 +1,346 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Wayne County Hacking for the Holidays</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&display=swap">
+<style>
+/* Layout: festive band hero with a pressable switch, then a filterable catalog grid of toy cards */
+:root{
+  --bg:#F3F6FA;
+  --surface:#FFFFFF;
+  --ink:#13233F;
+  --muted:#55627A;
+  --line:#D9E0EB;
+  --accent:#C4183C;      /* cranberry */
+  --accent-ink:#FFFFFF;
+  --evergreen:#0F6B5C;
+  --gold:#E8A317;
+  --hero:#13233F;
+  --hero-ink:#F3F6FA;
+  --chip:#E7ECF4;
+  --tint-plush:#FBE3E8;
+  --tint-hard:#DDEFEA;
+  --font-display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --font-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C1424;--surface:#15203A;--ink:#EAF0F8;--muted:#A3AFC4;--line:#26334F;
+  --accent:#F0476A;--accent-ink:#1A0A10;--evergreen:#3FC2A9;--gold:#F5BE4A;
+  --hero:#07101E;--hero-ink:#EAF0F8;--chip:#1E2A46;--tint-plush:#3A1E2A;--tint-hard:#14332E;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0C1424;--surface:#15203A;--ink:#EAF0F8;--muted:#A3AFC4;--line:#26334F;
+  --accent:#F0476A;--accent-ink:#1A0A10;--evergreen:#3FC2A9;--gold:#F5BE4A;
+  --hero:#07101E;--hero-ink:#EAF0F8;--chip:#1E2A46;--tint-plush:#3A1E2A;--tint-hard:#14332E;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* Hero */
+.hero{background:var(--hero);color:var(--hero-ink);position:relative;overflow:hidden}
+.hero .wrap{padding-block:56px 54px;padding-inline:44px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center}
+.lights{position:absolute;inset:0;pointer-events:none}
+.lights::before{content:"";position:absolute;inset:8px;border:2px solid color-mix(in srgb,var(--hero-ink) 25%,transparent);border-radius:14px}
+.bulb{position:absolute;width:12px;height:18px;margin-left:-6px;transform-origin:50% 0;border-radius:50% 50% 45% 45%;background:color-mix(in srgb,var(--hero-ink) 18%,transparent);transition:background .25s,box-shadow .25s}
+.hero.lit .bulb:nth-child(3n+1){background:var(--accent);box-shadow:0 0 14px var(--accent)}
+.hero.lit .bulb:nth-child(3n+2){background:var(--gold);box-shadow:0 0 14px var(--gold)}
+.hero.lit .bulb:nth-child(3n){background:var(--evergreen);box-shadow:0 0 14px var(--evergreen)}
+.eyebrow{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--gold);margin:0 0 10px}
+.hero h1{font-size:clamp(2.2rem,6vw,4.4rem);font-weight:800;line-height:.98;letter-spacing:-.02em}
+.hero h1 span{color:var(--accent)}
+.hero p.fine{max-width:56ch;margin:10px 0 0;padding-left:12px;border-left:3px solid var(--gold);font-size:.92rem;color:color-mix(in srgb,var(--hero-ink) 72%,transparent)}
+.hero p.lede{max-width:56ch;margin:16px 0 0;font-size:1.08rem;color:color-mix(in srgb,var(--hero-ink) 82%,transparent)}
+.stats{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:22px;font-size:.92rem}
+.stats b{font-family:var(--font-display);font-size:1.4rem;display:block;line-height:1.1}
+
+.switch-demo{display:grid;justify-items:center;gap:10px;text-align:center}
+.switch-btn{width:150px;height:150px;border-radius:50%;border:0;cursor:pointer;
+  background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--accent) 70%,#fff),var(--accent) 60%);
+  box-shadow:0 10px 0 color-mix(in srgb,var(--accent) 55%,#000),0 18px 30px rgba(0,0,0,.35);
+  transition:transform .08s,box-shadow .08s;touch-action:none}
+.switch-btn:active,.switch-btn.down{transform:translateY(8px);box-shadow:0 2px 0 color-mix(in srgb,var(--accent) 55%,#000),0 6px 14px rgba(0,0,0,.35)}
+.switch-demo small{font-size:.85rem;color:color-mix(in srgb,var(--hero-ink) 75%,transparent);max-width:20ch}
+.plug{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,var(--hero-ink) 60%,transparent)}
+
+/* Guide */
+.guide{padding-block:36px 8px}
+.guide-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.guide h2{font-size:1.5rem;margin-bottom:16px}
+.g{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 18px 16px}
+.g h3{font-size:1.05rem;margin-bottom:6px}
+.g p{margin:0;color:var(--muted);font-size:.95rem}
+.g .term{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.9rem}
+
+/* Filters */
+.catalog{padding-block:28px 56px}
+.toolbar{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;justify-content:space-between;margin-bottom:20px}
+.toolbar h2{font-size:1.5rem}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filters button{font:inherit;font-size:.92rem;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.subbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:22px}
+.search{flex:1 1 240px;min-width:0}
+.search input,.subbar select{width:100%;font:inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.subbar select{width:auto}
+.count{color:var(--muted);font-size:.92rem;font-variant-numeric:tabular-nums}
+
+/* Cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.art{position:relative;aspect-ratio:4/3;max-width:100%;background:var(--tint-hard);overflow:hidden}
+.art.plush{background:var(--tint-plush)}
+.art img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.num{position:absolute;top:10px;left:10px;font-family:var(--font-display);font-weight:800;font-size:.8rem;background:var(--surface);color:var(--ink);padding:3px 9px;border-radius:999px;font-variant-numeric:tabular-nums}
+.body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:10px;flex:1}
+.card h3{font-size:1.15rem;line-height:1.2}
+.desc{margin:0;color:var(--muted);font-size:.94rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.75rem;letter-spacing:.04em;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--ink)}
+.inputs{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700}
+.dots{display:inline-flex;gap:4px}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
+.mode{font-weight:400;color:var(--muted)}
+.buy{margin-top:auto;border-top:1px dashed var(--line);padding-top:12px;display:grid;gap:8px}
+.buy-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pick{font-size:.86rem;color:var(--muted);min-width:0}
+.pick b{color:var(--ink);font-weight:700}
+.match{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:2px 8px;border-radius:6px;border:1px solid currentColor;white-space:nowrap}
+.match.exact{color:var(--evergreen)}
+.match.comp{color:var(--muted)}
+.shop{display:flex;align-items:center;justify-content:space-between;gap:10px;text-decoration:none;background:var(--accent);color:var(--accent-ink);padding:10px 14px;border-radius:10px;font-weight:700;font-size:.95rem}
+.shop:hover{filter:brightness(1.08)}
+.shop.secondary{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600;font-size:.88rem;padding:8px 14px}
+.shop.secondary:hover{filter:none;border-color:var(--ink)}
+.cta{display:inline-flex;align-items:center;gap:10px;margin-top:18px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;padding:12px 18px;border-radius:10px}
+.cta:hover{filter:brightness(1.08)}
+.price{font-family:var(--font-display);font-variant-numeric:tabular-nums}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0}
+
+footer{border-top:1px solid var(--line)}
+footer .wrap{padding-block:24px 36px;color:var(--muted);font-size:.88rem;display:grid;gap:6px}
+
+@media (max-width:820px){
+  .hero .wrap{grid-template-columns:1fr}
+  .switch-demo{justify-items:start;grid-template-columns:auto 1fr;align-items:center;text-align:left}
+  .switch-btn{width:96px;height:96px}
+  .guide-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="hero" id="hero">
+  <div class="lights" aria-hidden="true" id="lights"></div>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Wishbook 2026</p>
+      <h1>Wayne County <span>Hacking</span> for the Holidays</h1>
+      <p class="lede">Every toy in this wishbook gets adapted by local volunteers so a child can play with it using an assistive switch. Browse the list, see how many switches each toy uses, and tap "Request this toy" to ask for one for your child.</p>
+      <p class="fine">We'll do our best to fill every request. Sometimes a toy sells out or becomes unavailable, and we have to buy a similar toy instead.</p>
+      <div class="stats">
+        <div><b id="stat-toys">24</b>toys</div>
+        <div><b id="stat-one">0</b>work with one switch</div>
+        <div><b id="stat-plush">0</b>plush toys</div>
+      </div>
+      <a class="cta" href="https://docs.google.com/forms/d/e/1FAIpQLSew44z16xIPSNrpx-PAEW_tWxtSQ5LHDfbG-7xZIia72nZEsA/viewform" target="_blank" rel="noopener">Request a toy for your child <span aria-hidden="true">&rarr;</span></a>
+    </div>
+    <div class="switch-demo">
+      <button class="switch-btn" id="switch" aria-label="Press and hold the switch to light up the lights"></button>
+      <div>
+        <div class="plug">Try it</div>
+        <small>Press and hold the switch. That's how a child plays.</small>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="guide wrap" aria-labelledby="guide-h">
+  <h2 id="guide-h">Reading a wishbook card</h2>
+  <div class="guide-grid">
+    <div class="g">
+      <h3>Switch inputs</h3>
+      <p>Each red dot is one switch jack. A 1-switch toy does one thing; RC cars use 4 for forward, back, left and right.</p>
+      <div class="term"><span class="dots"><span class="dot"></span><span class="dot"></span></span> 2 switches</div>
+    </div>
+    <div class="g">
+      <h3>Press and hold vs. single press</h3>
+      <p>Press and hold toys run only while the switch is down, like a bubble machine. Single press toys play a song or phrase from one tap.</p>
+    </div>
+    <div class="g">
+      <h3>Exact or comparable</h3>
+      <p>Exact means the same toy as the wishbook. Comparable means a close match when the original isn't sold in the US or is out of stock.</p>
+    </div>
+  </div>
+</section>
+
+<main class="catalog wrap" aria-labelledby="cat-h">
+  <div class="toolbar">
+    <h2 id="cat-h">The toys</h2>
+    <div class="filters" role="group" aria-label="Filter by type" id="filters">
+      <button data-f="all" aria-pressed="true">All</button>
+      <button data-f="Plush" aria-pressed="false">Plush</button>
+      <button data-f="Bubbles" aria-pressed="false">Bubbles</button>
+      <button data-f="Lights" aria-pressed="false">Lights &amp; lamps</button>
+      <button data-f="Movement" aria-pressed="false">Moves</button>
+      <button data-f="RC" aria-pressed="false">Remote control</button>
+    </div>
+  </div>
+  <div class="subbar">
+    <label class="search"><span hidden>Search toys</span><input id="q" type="search" placeholder="Search toys, like Bluey or dinosaur"></label>
+    <label><span hidden>Number of switches</span>
+      <select id="inputs">
+        <option value="any">Any number of switches</option>
+        <option value="1">1 switch</option>
+        <option value="2">2 switches</option>
+        <option value="3">3 or more</option>
+      </select>
+    </label>
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>Store links point to the toy or a close match. Check the listing before buying.</div>
+    <div>Toy list and photos from the Makers Making Change Hacking for the Holidays Wishbook 2026. Photos show the adapted wishbook toy, except Nos. 11, 13 and 20, which show the store pick from Walmart or Amazon. No. 34 is a Wayne County addition and shows the Amazon product photo.</div>
+  </div>
+</footer>
+
+<script>
+const ICONS={
+ bubbles:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><circle cx="24" cy="36" r="14"/><circle cx="44" cy="20" r="8"/><circle cx="48" cy="44" r="5"/><path d="M17 31a8 8 0 0 1 7-5"/></svg>',
+ lamp:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 10h20l-3 30H25z"/><path d="M20 54h24M26 40v14M38 40v14"/><circle cx="32" cy="24" r="4" fill="currentColor"/></svg>',
+ car:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M8 40V30l8-10h26l10 10h4v10z"/><circle cx="20" cy="42" r="6" fill="var(--surface)"/><circle cx="46" cy="42" r="6" fill="var(--surface)"/><path d="M50 12l6-4M54 18h6"/></svg>',
+ paw:'<svg viewBox="0 0 64 64" fill="currentColor"><ellipse cx="32" cy="42" rx="12" ry="10"/><circle cx="16" cy="28" r="5"/><circle cx="26" cy="18" r="5"/><circle cx="38" cy="18" r="5"/><circle cx="48" cy="28" r="5"/></svg>',
+ note:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M26 46V14l24-6v32"/><circle cx="20" cy="46" r="6" fill="currentColor"/><circle cx="44" cy="40" r="6" fill="currentColor"/></svg>',
+ fan:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><circle cx="32" cy="26" r="18"/><path d="M32 26c0-10 8-12 8-12M32 26c9 4 8 12 8 12M32 26c-8 6-14 2-14 2"/><path d="M32 44v10M22 56h20"/></svg>',
+ track:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M8 50h12V38h12V26h12V14h12"/><circle cx="46" cy="10" r="4" fill="currentColor"/><path d="M8 56h48"/></svg>',
+ target:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><circle cx="32" cy="32" r="22"/><circle cx="32" cy="32" r="12"/><circle cx="32" cy="32" r="3" fill="currentColor"/></svg>',
+ wand:'<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M14 52l26-26"/><circle cx="46" cy="18" r="8"/><path d="M46 4v4M46 28v4M60 18h-4M36 18h-4"/></svg>'
+};
+
+const TOYS=[
+ {n:1,name:"Spinning Light Wand",type:"Hardshell",feat:["Lights","Movement"],mode:"Press and hold",inputs:1,icon:"wand",desc:"A wand with multicolored lights that spin fast when the switch is held.",pick:"ArtCreativity Spinning Light-Up Wand",url:"https://www.walmart.com/ip/144338022",store:"Walmart",match:"Comparable",note:"Kid Connection is a Walmart house brand; this one works the same way."},
+ {n:2,name:"Hippo Bubble Machine",type:"Hardshell",feat:["Bubbles"],mode:"Press and hold",inputs:1,icon:"bubbles",desc:"Bubbles stream out of a grey hippo's mouth.",pick:"Play Day Puppy Bubble Blower",url:"https://www.walmart.com/ip/seort/7590211339",store:"Walmart",match:"Comparable",note:"No motorized hippo found in the US. Check that it's battery-operated before buying."},
+ {n:3,name:"Bluey Musical Bubble Machine",type:"Hardshell",feat:["Bubbles","Music"],mode:"Press and hold",inputs:1,icon:"bubbles",desc:"Blows bubbles and plays Bluey music at the same time.",pick:"Bluey No Spill Musical Bubble Machine",url:"https://www.walmart.com/ip/BLUEY-NO-SPILL-MCHNE/7228152803",store:"Walmart",match:"Exact",note:""},
+ {n:4,name:"Stitch Coconut Musical Bubble Machine",type:"Hardshell",feat:["Bubbles","Music"],mode:"Press and hold",inputs:1,icon:"bubbles",desc:"Stitch in a coconut, blowing bubbles and playing music.",pick:"Disney Stitch Musical Bubble Machine",url:"https://www.walmart.com/ip/LILO-BBL-MACHINE/8037173662",store:"Walmart",match:"Exact",note:""},
+ {n:5,name:"RC Police and Race Car",type:"Hardshell",feat:["RC","Movement"],mode:"Press and hold",inputs:2,icon:"car",desc:"Two cartoon RC cars. One switch drives forward, the other backs up and turns.",pick:"Prextex 2-Pack Cartoon RC Cars",url:"https://www.amazon.com/dp/B01CIWDDMO",store:"Amazon",match:"Exact",note:""},
+ {n:6,name:"Jellyfish Lava Lamp",type:"Hardshell",feat:["Lights"],mode:"Press and hold",inputs:1,icon:"lamp",desc:"Color-changing lights and a gentle motor make the jellyfish look like they're swimming.",pick:"Fdelink Jellyfish Lava Lamp",url:"https://www.walmart.com/ip/3765576445",store:"Walmart",match:"Comparable",note:"Pick one with an on/off button, not remote-only."},
+ {n:8,name:"Bump N Go Bubble Dino",type:"Hardshell",feat:["Bubbles","Movement","Music"],mode:"Press and hold",inputs:1,icon:"bubbles",desc:"A dinosaur that walks, roars and blows bubbles.",pick:"Play Day Bump N Go Bubble Dino",url:"https://www.walmart.com/ip/Play-Day-Bump-N-Go-Bubble-Blowing-Dino-with-Lights-Sounds-Movement-for-Children-Ages-3/17298002610",store:"Walmart",match:"Exact",note:""},
+ {n:9,name:"Light Projector",type:"Hardshell",feat:["Lights"],mode:"Press and hold",inputs:3,icon:"lamp",desc:"Projects stars, moons and colors onto walls and ceilings. Three switches control light, color and rotation.",pick:"Fortally Nebula Star Projector",url:"https://www.amazon.com/Fortally-Nebula-Projector-Degree-Rotation/dp/B085VDRF1L/",store:"Amazon",match:"Comparable",note:"Check that it has three separate buttons before buying."},
+ {n:11,name:"Calming Vibes Elephant",type:"Plush",feat:["Music","Vibration"],mode:"Single press",inputs:1,icon:"paw",desc:"A soft soother that plays music, vibrates, or both.",pick:"Fisher-Price Calming Vibes Elephant Soother",url:"https://www.walmart.com/ip/Fisher-Price-Plush-Elephant-Baby-Toy-Sound-Machine-with-Vibrations-Multicolor/1442362272",store:"Walmart",match:"Comparable",note:"The wishbook has the hedgehog version of the same soother."},
+ {n:13,name:"Walking Caticorn",type:"Plush",feat:["Movement","Music"],mode:"Single press",inputs:2,icon:"paw",desc:"A walking pet on a leash. One switch walks it, the other makes it meow.",pick:"Kid Connection Walking Pet Caticorn",url:"https://www.walmart.com/ip/Kid-Connection-Walking-Caticorn-Electronic-Plush-Pet-Toy-11-in/14097972022",store:"Walmart",match:"Comparable",note:"The wishbook's unicorn version is out of stock."},
+ {n:14,name:"Talking Bluey Plush",type:"Plush",feat:["Music"],mode:"Single press",inputs:1,icon:"paw",desc:"Bluey says phrases from the show and sings the theme song.",pick:"Bluey 13in Talking Plush",url:"https://www.amazon.com/dp/B0DW17ZH3X",store:"Amazon",match:"Exact",note:""},
+ {n:15,name:"LeapFrog My Pal Violet",type:"Plush",feat:["Music","Lights"],mode:"Single press",inputs:4,icon:"paw",desc:"A purple puppy that sings bedtime songs and teaches words and animals.",pick:"LeapFrog My Best Pal Violet",url:"https://www.target.com/p/leapfrog-my-best-pal-violet/-/A-94990946",store:"Target",match:"Exact",note:"Newer version of My Pal Violet."},
+ {n:17,name:"Dinosaur Race Track",type:"Hardshell",feat:["Movement","Lights","Music"],mode:"Press and hold",inputs:1,icon:"track",desc:"Little dinosaurs climb the stairs and race down the slide, with lights and music.",pick:"Dinosaur Chasing Race Track",url:"https://www.amazon.com/Dinosaur-Chasing-Climbing-Electric-Coaster/dp/B0F9T9H2LR",store:"Amazon",match:"Comparable",note:"Also sold at Walmart under the same name."},
+ {n:18,name:"Retro Fan",type:"Hardshell",feat:["Movement"],mode:"Press and hold",inputs:1,icon:"fan",desc:"A little vintage-style fan that spins and blows air.",pick:"Sourcingbay 4in Vintage Mini Fan",url:"https://www.walmart.com/ip/16808416049",store:"Walmart",match:"Comparable",note:"USB powered."},
+ {n:19,name:"Ms. Rachel Speak & Sing Doll",type:"Plush",feat:["Music"],mode:"Single press",inputs:2,icon:"note",desc:"Plays Ms. Rachel's songs and phrases.",pick:"Ms. Rachel Speak & Sing 16in Doll",url:"https://www.amazon.com/Ms-Rachel-6072297-Doll/dp/B0CX24138S/",store:"Amazon",match:"Exact",note:"Also sold at Target and Walmart."},
+ {n:20,name:"Walking French Bulldog",type:"Plush",feat:["Movement","Music"],mode:"Single press",inputs:2,icon:"paw",desc:"A plush pup on a leash that walks and barks.",pick:"YH YUHUNG Walking Dog with Leash",url:"https://www.amazon.com/YH-YUHUNG-Walking-Electronic-Interactive/dp/B09L7F3RYH/",store:"Amazon",match:"Comparable",note:"One leash button walks and barks together, so it adapts a little differently."},
+ {n:23,name:"Bananas for Boots",type:"Plush",feat:["Music"],mode:"Single press",inputs:1,icon:"paw",desc:"Boots from Dora says phrases and sings songs.",pick:"Dora Bananas for Boots Plush",url:"https://www.amazon.com/Official-Bananas-Stuffed-Educational-Interactive/dp/B0FDGN1R2G",store:"Amazon",match:"Exact",note:"Also sold at Walmart and Target."},
+ {n:24,name:"El Toro Loco RC Monster Truck",type:"Hardshell",feat:["RC","Movement"],mode:"Press and hold",inputs:4,icon:"car",desc:"A 1:24 scale Monster Jam truck. Four switches for forward, back, left and right.",pick:"Monster Jam El Toro Loco 1:24 RC",url:"https://www.walmart.com/search?q=Monster+Jam+El+Toro+Loco+RC+1%3A24",store:"Walmart",match:"Exact",note:"Link opens a Walmart search for the exact truck."},
+ {n:25,name:"Peek-a-Boo Koala or Elephant",type:"Plush",feat:["Movement","Music"],mode:"Single press",inputs:2,icon:"paw",desc:"A plush animal that sings, talks and plays peek-a-boo.",pick:"Spark Create Imagine Peek-a-Boo Koala or Elephant",url:"https://www.walmart.com/search?q=Spark+Create+Imagine+Peek-a-Boo+Grey+Koala",store:"Walmart",match:"Exact",note:"Both versions are in stock at Walmart."},
+ {n:26,name:"Talking Bingo Plush",type:"Plush",feat:["Music"],mode:"Single press",inputs:1,icon:"paw",desc:"Bingo from Bluey talks and plays music.",pick:"Bluey Talking Bingo Plush",url:"https://www.amazon.com/dp/B09NMG7VJG",store:"Amazon",match:"Exact",note:""},
+ {n:28,name:"Megalodon RC Monster Truck",type:"Hardshell",feat:["RC","Movement"],mode:"Press and hold",inputs:4,icon:"car",desc:"A 1:24 scale shark monster truck. Four switches for forward, back, left and right.",pick:"Monster Jam Megalodon Ice RC 1:24",url:"https://www.walmart.com/ip/seort/6533322558",store:"Walmart",match:"Exact",note:"This is the Ice color version; the standard Megalodon RC works the same way."},
+ {n:29,name:"Air Hogs Zero Gravity Car",type:"Hardshell",feat:["RC","Movement"],mode:"Press and hold",inputs:4,icon:"car",desc:"An RC car that can drive up walls.",pick:"Air Hogs Zero Gravity Wall Climber",url:"https://www.amazon.com/dp/B0DTVYVKJV",store:"Amazon",match:"Exact",note:""},
+ {n:32,name:"Tornado Lamp",type:"Hardshell",feat:["Lights"],mode:"Press and hold",inputs:1,icon:"lamp",desc:"Color-changing lights and a swirling tornado effect.",pick:"Urban Shop 12in LED Tornado Lamp",url:"https://www.walmart.com/ip/384937630",store:"Walmart",match:"Comparable",note:"Battery-operated with an on/off switch."},
+ {n:34,name:"Bluey Hooray Drum Set",type:"Hardshell",feat:["Music","Lights"],mode:"Single press",inputs:4,icon:"note",desc:"A light-up drum set with three drums and a cymbal. Each tap plays drum, silly or animal sounds, and Bluey sings along in Dance Party mode.",pick:"VTech Bluey Hooray Drum Set",url:"https://www.amazon.com/VTech-Bluey-Hooray-Drum-Set/dp/B0CSD8PRKL/",store:"Amazon",match:"Exact",note:"Added by Wayne County. Not in the Makers Making Change wishbook."}
+];
+
+const FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSew44z16xIPSNrpx-PAEW_tWxtSQ5LHDfbG-7xZIia72nZEsA/viewform";
+const FIRST_CHOICE="330509649";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const featLabel={Lights:"Lights",Movement:"Moves",Music:"Sound",Bubbles:"Bubbles",RC:"Remote control",Vibration:"Vibration"};
+
+function card(t){
+  const dots='<span class="dots" aria-hidden="true">'+'<span class="dot"></span>'.repeat(t.inputs)+'</span>';
+  const tags=[t.type,...t.feat.map(f=>featLabel[f])].map(x=>`<span class="tag">${esc(x)}</span>`).join("");
+  const exact=t.match==="Exact";
+  return `<article class="card">
+    <div class="art ${t.type==="Plush"?"plush":"hard"}"><img src="toys/${t.n}.jpg" alt="${esc(t.name)}, adapted with a switch" loading="lazy" width="363" height="363"><span class="num">No. ${t.n}</span></div>
+    <div class="body">
+      <h3>${esc(t.name)}</h3>
+      <p class="desc">${esc(t.desc)}</p>
+      <div class="tags">${tags}</div>
+      <div class="inputs">${dots}${t.inputs} switch${t.inputs>1?"es":""} <span class="mode">· ${esc(t.mode)}</span></div>
+      <div class="buy">
+        <div class="buy-row"><span class="pick">Buy: <b>${esc(t.pick)}</b></span><span class="match ${exact?"exact":"comp"}">${exact?"Exact":"Comparable"}</span></div>
+        <a class="shop" href="${FORM_URL}?usp=pp_url&entry.${FIRST_CHOICE}=${encodeURIComponent(`No. ${t.n} – ${t.name}`)}" target="_blank" rel="noopener"><span>Request this toy</span><span aria-hidden="true">&rarr;</span></a>
+        <a class="shop secondary" href="${esc(t.url)}" target="_blank" rel="noopener"><span>Shop at ${esc(t.store)}</span><span aria-hidden="true">&rarr;</span></a>
+        ${t.note?`<p class="note">${esc(t.note)}</p>`:""}
+      </div>
+    </div>
+  </article>`;
+}
+
+let filt="all";
+const grid=document.getElementById("grid"),q=document.getElementById("q"),sel=document.getElementById("inputs"),count=document.getElementById("count");
+function render(){
+  const term=q.value.trim().toLowerCase(),inp=sel.value;
+  const list=TOYS.filter(t=>{
+    if(filt==="Plush"&&t.type!=="Plush")return false;
+    if(filt!=="all"&&filt!=="Plush"&&!t.feat.includes(filt))return false;
+    if(inp!=="any"){const n=+inp;if(n===3?t.inputs<3:t.inputs!==n)return false}
+    if(term&&!(t.name+" "+t.desc+" "+t.pick).toLowerCase().includes(term))return false;
+    return true;
+  });
+  grid.innerHTML=list.length?list.map(card).join(""):'<p class="empty">No toys match. Try a different filter or search.</p>';
+  count.textContent=`${list.length} of ${TOYS.length} toys`;
+}
+document.getElementById("filters").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  filt=b.dataset.f;
+  document.querySelectorAll("#filters button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
+  render();
+});
+q.addEventListener("input",render);sel.addEventListener("change",render);
+
+document.getElementById("stat-toys").textContent=TOYS.length;
+document.getElementById("stat-one").textContent=TOYS.filter(t=>t.inputs===1).length;
+document.getElementById("stat-plush").textContent=TOYS.filter(t=>t.type==="Plush").length;
+render();
+
+// Lights + switch demo
+const lights=document.getElementById("lights");
+const hero=document.getElementById("hero"),sw=document.getElementById("switch");
+// String bulbs all the way around the banner, each hanging inward from the wire
+function stringLights(){
+  const W=hero.clientWidth,H=hero.clientHeight,m=9,gap=W<600?44:60,r=22;
+  const sides=[ // [x0,y0,x1,y1,rotation]
+    [m+r,m,W-m-r,m,0],
+    [W-m,m+r,W-m,H-m-r,90],
+    [W-m-r,H-m,m+r,H-m,180],
+    [m,H-m-r,m,m+r,270]
+  ];
+  const frag=document.createDocumentFragment();
+  for(const [x0,y0,x1,y1,rot] of sides){
+    const len=Math.hypot(x1-x0,y1-y0),n=Math.max(2,Math.round(len/gap));
+    for(let i=0;i<n;i++){
+      const f=(i+.5)/n,b=document.createElement("span");
+      b.className="bulb";
+      b.style.left=(x0+(x1-x0)*f)+"px";
+      b.style.top=(y0+(y1-y0)*f)+"px";
+      b.style.transform=`rotate(${rot}deg)`;
+      frag.appendChild(b);
+    }
+  }
+  lights.replaceChildren(frag);
+}
+stringLights();
+let lw=hero.clientWidth,lh=hero.clientHeight;
+new ResizeObserver(()=>{if(hero.clientWidth!==lw||hero.clientHeight!==lh){lw=hero.clientWidth;lh=hero.clientHeight;stringLights()}}).observe(hero);
+const on=e=>{e.preventDefault();hero.classList.add("lit");sw.classList.add("down")};
+const off=()=>{hero.classList.remove("lit");sw.classList.remove("down")};
+sw.addEventListener("pointerdown",on);
+["pointerup","pointerleave","pointercancel"].forEach(ev=>sw.addEventListener(ev,off));
+sw.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter")on(e)});
+sw.addEventListener("keyup",off);
+</script>
+
+</body></html>
